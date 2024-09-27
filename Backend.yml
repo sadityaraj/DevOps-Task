@@ -1,45 +1,51 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend
+  name: api
+  namespace: default
+  labels:
+    role: api
+    env: demo
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: backend
+      role: api
   template:
     metadata:
       labels:
-        app: backend
+        role: api
     spec:
       containers:
-        - name: backend
-          image: your-backend-image:latest
-          ports:
-            - containerPort: 8080
+      - name: api
+        image: public.ecr.aws/w8u5e4v2/workshop-backend:v1
+        imagePullPolicy: Always
+        env:
+          - name: MONGO_CONN_STR
+            value: mongodb://mongodb-svc:27017/todo?directConnection=true
+          - name: MONGO_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: mongo-sec
+                key: username
+          - name: MONGO_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mongo-sec
+                key: password
+        ports:
+        - containerPort: 8080
 ---
+
 apiVersion: v1
 kind: Service
 metadata:
-  name: backend-service
+  name: api
+  namespace: default
 spec:
+  ports:
+  - port: 8080
+    protocol: TCP
   type: ClusterIP
   selector:
-    app: backend
-  ports:
-    - protocol: TCP
-      port: 8080
-      targetPort: 8080
----
-apiVersion: autoscaling/v1
-kind: HorizontalPodAutoscaler
-metadata:
-  name: backend-hpa
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: backend
-  minReplicas: 2
-  maxReplicas: 5
-  targetCPUUtilizationPercentage: 50
+   role: api
