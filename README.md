@@ -21,15 +21,27 @@ The Kubernetes manifest files are used to define deployments for the front-end, 
 Front-End, Back-End, and Database Deployments:
 
 1. Front-End:
-    Deployed with 2 replicas, exposed via a ClusterIP service on port 80.
-    An HorizontalPodAutoscaler (HPA) monitors the CPU utilization and scales the replicas between 2 and 5.
-
+   
+This configuration defines a frontend Deployment that manages 2 replicas of a pod running a container based on the aditya/image-frontend:v1 image.
+A Service exposes the frontend on port 3000 within the cluster.
+A HorizontalPodAutoscaler (HPA) is configured to automatically scale the number of pods between 2 and 5, based on CPU utilization.
+        
+   
 2. Back-End:
-    Similar to the front-end, deployed with 2 replicas, exposed on port 8080, and with an HPA for CPU-based scaling between 2 and 5 replicas.
+   
+Deployment: Manages 2 replicas of a backend API pod using the image aditya/mybackendimage. It also pulls MongoDB credentials (username and password) from a Kubernetes Secret (mongo-sec) and exposes port 8080.
+Secret: Stores MongoDB credentials (username and password) in base64-encoded form.
+Service: Exposes the API internally within the Kubernetes cluster using a ClusterIP on port 8080.
+Horizontal Pod Autoscaler (HPA): Automatically scales the number of replicas between 2 and 5 based on CPU utilization (threshold: 50%).
+
+Note: The values must be decoded (base64) before usage. Kubernetes handles this when the secret is injected into pods.
 
 3. Database:
-    Deployed with 1 replica (no autoscaling needed). Exposed internally via a ClusterIP service on port 5432 for the back-end to connect.
-    
+   
+Deployment: Creates 1 MongoDB pod using the Docker image mongo:4.4.6. The MongoDB pod requests 512Mi of memory and 250m of CPU, with limits of 1Gi of memory and 500m of CPU. Environment variables for the root MongoDB user credentials are pulled from a Kubernetes secret (mongo-sec), which stores the username and password.
+
+Service: Exposes the MongoDB pod internally within the cluster on port 27017, enabling other pods or services to connect to the MongoDB instance using the mongodb-svc Service. The Service routes traffic to pods with the label app: mongodb.
+
 **Networking Configuration:**
 
 1. ClusterIP Services:
@@ -37,4 +49,5 @@ Front-End, Back-End, and Database Deployments:
     The front-end communicates with the back-end via the backend-service.
     The back-end communicates with the database via the database-service.
 2. Pod Autoscaling:
-    Both front-end and back-end services utilize Horizontal Pod Autoscalers (HPA) to dynamically adjust the number of running pods based on CPU utilization metrics. This ensures the application scales efficiently based on the demand.
+    Both front-end and back-end services utilize Horizontal Pod Autoscalers (HPA) to dynamically adjust the number of running pods based on CPU utilization 
+    metrics. This ensures the application scales efficiently based on the demand.
