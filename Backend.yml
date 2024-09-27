@@ -21,7 +21,7 @@ spec:
         image: aditya/mybackendimage
         imagePullPolicy: Always
         env:
-          - name: MONGO_CONN_STR
+          - name: MONGO_CONNECTION
             value: mongodb://mongodb-svc:27017?directConnection=true
           - name: MONGO_USERNAME
             valueFrom:
