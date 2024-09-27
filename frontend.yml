@@ -21,7 +21,7 @@ spec:
         image: aditya/image-frontend:v1
         imagePullPolicy: Always
         env:
-          - name: REACT_APP_BACKEND_URL
+          - name: APP_BACKEND_URL
             value: "http://task.devops.in/api/tasks" #add your API_Load_Balancer DNS here
         ports:
         - containerPort: 3000
