@@ -95,20 +95,16 @@ Scalability:
 **Network Flow Explanation**
 The network diagram complements the architecture by detailing how the different components communicate over the network. Here's a breakdown of the network 
 aspects:
-
- Network Policies:
-
-  The diagram may include indications of network policies (like using Calico) that enforce rules governing the traffic flow between the pods.
-  For example, it can restrict access to the database pod, allowing only the backend pod to communicate with it, enhancing security.
-    Traffic Flow:
-     Frontend to Backend:
-        The network diagram illustrates the flow of HTTP requests from the frontend to the backend.
-        This communication is often secured using HTTPS to protect data in transit.
-     Backend to Database:
-        The flow from the backend to the database indicates how the backend makes SQL or NoSQL queries to interact with the data layer.
-        The backend pod usually communicates with the database using the internal IP address assigned by Kubernetes, ensuring that external traffic does not reach 
-        the database directly.
-     Load Balancing:
-        Depending on the setup, there may be indications of load balancers managing traffic to the frontend and backend pods.
-        Load balancers distribute incoming requests among multiple pod instances to improve availability and performance.
+  
+ Traffic Flow:
+         Frontend to Backend:
+            The network diagram illustrates the flow of HTTP requests from the frontend to the backend.
+            This communication is often secured using HTTPS to protect data in transit.
+         Backend to Database:
+            The flow from the backend to the database indicates how the backend makes SQL or NoSQL queries to interact with the data layer.
+            The backend pod usually communicates with the database using the internal IP address assigned by Kubernetes, ensuring that external traffic does not 
+            reach the database directly.
+         Load Balancing:
+            Depending on the setup, there may be indications of load balancers managing traffic to the frontend and backend pods.
+            Load balancers distribute incoming requests among multiple pod instances to improve availability and performance.
 
